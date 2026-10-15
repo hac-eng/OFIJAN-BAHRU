@@ -110,7 +110,7 @@
     text-shadow: 0 0 14px var(--pink), 0 0 40px var(--pink), 0 0 80px var(--pink-deep);
     min-height: 1em;
   }
-  .count-num.tick { animation: tick 1s ease-out; }
+  .count-num.tick { animation: tick 3s ease-out; }
   @keyframes tick {
     0% { transform: scale(2.2); opacity: 0; }
     25% { transform: scale(1); opacity: 1; }
@@ -460,7 +460,7 @@
       num.textContent = n; num.className = "count-num tick";
       msg.textContent = lines[n];
       burst(W / 2, H / 2, 8, 5);
-      n--; setTimeout(step, 1000);
+      n--; setTimeout(step, 3000);
     }
     step();
   }
