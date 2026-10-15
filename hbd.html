@@ -292,7 +292,18 @@
 <script>
 (() => {
   const PASSCODE = "0904";
-  const PHOTOS = Array.from({ length: 10 }, (_, i) => `photos/photo${i + 1}.jpg`);
+  const PHOTOS = [
+  "photos/mine1.jpg",
+  "photos/mine2.jpg",
+  "photos/mine3.jpg",
+  "photos/mine4.jpg",
+  "photos/mine5.jpg",
+  "photos/mine6.jpg",
+  "photos/mine7.jpg",
+  "photos/mine8.jpg",
+  "photos/mine9.jpg",
+  "photos/mine10.jpg"  
+];
   const $ = (s) => document.querySelector(s);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
