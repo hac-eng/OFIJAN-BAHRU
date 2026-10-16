@@ -185,7 +185,25 @@
   @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.18); } 30% { transform: scale(1); } 45% { transform: scale(1.12); } }
   .wish-card { text-align: center; font-size: 1.15rem; line-height: 1.9; font-weight: 400; }
   .wish-card .em { color: #fff; font-weight: 600; letter-spacing: .02em; }
-
+  /* ---------- cake ---------- */
+  .cake-sub { font-weight: 300; opacity: .85; font-size: 1rem; min-height: 1.5em; transition: opacity .3s; }
+  .cake-wrap { position: relative; width: min(100%, 380px); touch-action: none; user-select: none; -webkit-user-select: none; }
+  #cakeSvg { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 0 22px rgba(255, 79, 163, .45)); }
+  #uL, #uS, #uR { transition: transform .9s cubic-bezier(.2, 1.15, .3, 1); }
+  #uS { filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .55)); }
+  .candle { cursor: pointer; transition: opacity .8s ease; }
+  .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flick .18s ease-in-out infinite alternate; filter: drop-shadow(0 0 6px #ffb347) drop-shadow(0 0 14px #ff7ab8); }
+  @keyframes flick { from { transform: scale(1, 1) rotate(-4deg); } to { transform: scale(.88, 1.14) rotate(4deg); } }
+  .candle.out .flame { animation: none; opacity: 0; transform: scale(.2); transition: opacity .3s, transform .35s; }
+  .gone .candle { opacity: 0; pointer-events: none; }
+  .smoke { fill: rgba(255, 255, 255, .55); transform-box: fill-box; transform-origin: center; animation: smoke 1.7s ease-out forwards; }
+  @keyframes smoke { from { transform: translate(0, 0) scale(.6); opacity: .8; } to { transform: translate(var(--dx), -50px) scale(2.4); opacity: 0; } }
+  #hintLine { opacity: 0; transition: opacity .5s; animation: dash 1s linear infinite; }
+  #hintLine.show { opacity: .85; }
+  @keyframes dash { to { stroke-dashoffset: -14; } }
+  #trail { filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #ff4fa3); }
+  .knife { position: absolute; left: 0; top: 0; font-size: 44px; line-height: 1; pointer-events: none; display: none; transform: translate(-50%, -85%) rotate(-30deg); filter: drop-shadow(0 0 8px rgba(255, 255, 255, .7)); z-index: 3; }
+  .fade-in { animation: rise .7s ease both; }
   /* ---------- misc ---------- */
   .dotsnav { display: flex; gap: 8px; margin-top: 4px; }
   .dotsnav span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 150, 205, .3); }
@@ -234,7 +252,77 @@
     <p class="count-msg" id="cmsg">Something special is on its way…</p>
   </div>
 </section>
+<!-- 2b. CAKE -->
+<section id="cake" class="screen">
+  <div class="inner">
+    <h2 class="script gal-title glow" id="cTitle">Make a wish 🕯️</h2>
+    <p class="cake-sub" id="cSub">Tap the candles to blow them out</p>
+    <div class="cake-wrap" id="cakeWrap">
+      <svg id="cakeSvg" viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" aria-label="Birthday cake">
+        <defs>
+          <linearGradient id="sponge" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff8fc3"/><stop offset="1" stop-color="#ff5aa5"/>
+          </linearGradient>
+          <linearGradient id="faceGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffd6e8"/><stop offset=".48" stop-color="#ffd6e8"/>
+            <stop offset=".49" stop-color="#fff7fb"/><stop offset=".6" stop-color="#fff7fb"/>
+            <stop offset=".61" stop-color="#ffd6e8"/><stop offset="1" stop-color="#ffc2dc"/>
+          </linearGradient>
+          <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3a1840"/><stop offset="1" stop-color="#1a0a22"/>
+          </linearGradient>
+          <clipPath id="cL"><rect x="0" y="0" width="130" height="300"/></clipPath>
+          <clipPath id="cS"><rect x="130" y="0" width="62" height="300"/></clipPath>
+          <clipPath id="cR"><rect x="192" y="0" width="128" height="300"/></clipPath>
+          <g id="cakeBody">
+            <rect x="50" y="140" width="220" height="110" rx="8" fill="url(#sponge)"/>
+            <rect x="50" y="190" width="220" height="14" fill="#fff4f9"/>
+            <rect x="44" y="124" width="232" height="30" rx="15" fill="#fff7fb"/>
+            <ellipse cx="68" cy="156" rx="9" ry="13" fill="#fff7fb"/>
+            <ellipse cx="108" cy="158" rx="9" ry="10" fill="#fff7fb"/>
+            <ellipse cx="152" cy="158" rx="9" ry="14" fill="#fff7fb"/>
+            <ellipse cx="196" cy="157" rx="9" ry="11" fill="#fff7fb"/>
+            <ellipse cx="234" cy="158" rx="9" ry="13" fill="#fff7fb"/>
+            <ellipse cx="258" cy="154" rx="8" ry="9" fill="#fff7fb"/>
+            <circle cx="60" cy="124" r="8" fill="#e5214f"/><circle cx="260" cy="124" r="8" fill="#e5214f"/>
+            <circle cx="60" cy="120" r="3" fill="#2f9e44"/><circle cx="260" cy="120" r="3" fill="#2f9e44"/>
+            <g>
+              <rect x="82" y="168" width="10" height="4" rx="2" fill="#ffd166" transform="rotate(20 87 170)"/>
+              <rect x="124" y="214" width="10" height="4" rx="2" fill="#fff" transform="rotate(-25 129 216)"/>
+              <rect x="170" y="222" width="10" height="4" rx="2" fill="#ffd166" transform="rotate(35 175 224)"/>
+              <rect x="214" y="170" width="10" height="4" rx="2" fill="#7dd3fc" transform="rotate(-15 219 172)"/>
+              <rect x="94" y="232" width="10" height="4" rx="2" fill="#7dd3fc" transform="rotate(30 99 234)"/>
+              <rect x="236" y="226" width="10" height="4" rx="2" fill="#fff" transform="rotate(-30 241 228)"/>
+              <rect x="146" y="172" width="10" height="4" rx="2" fill="#d96bff" transform="rotate(10 151 174)"/>
+              <rect x="64" y="212" width="10" height="4" rx="2" fill="#ffd166" transform="rotate(-20 69 214)"/>
+            </g>
+          </g>
+        </defs>
 
+        <ellipse cx="160" cy="262" rx="146" ry="22" fill="url(#plate)" stroke="rgba(255,130,195,.6)" stroke-width="1.5"/>
+        <rect id="face" x="130" y="124" width="62" height="126" fill="url(#faceGrad)" opacity="0"/>
+        <use id="uWhole" href="#cakeBody"/>
+        <use id="uL" href="#cakeBody" clip-path="url(#cL)" style="display:none"/>
+        <use id="uS" href="#cakeBody" clip-path="url(#cS)" style="display:none"/>
+        <use id="uR" href="#cakeBody" clip-path="url(#cR)" style="display:none"/>
+
+        <g id="candles">
+          <g class="candle" data-x="95"><rect x="91" y="94" width="8" height="36" rx="2" fill="#ff9ccd"/><line x1="95" y1="94" x2="95" y2="88" stroke="#4a2545" stroke-width="1.5"/><ellipse class="flame" cx="95" cy="80" rx="5" ry="9" fill="#ffd166"/><ellipse class="flame" cx="95" cy="82" rx="2.4" ry="5" fill="#fff"/><rect x="80" y="60" width="30" height="72" fill="transparent"/></g>
+          <g class="candle" data-x="128"><rect x="124" y="94" width="8" height="36" rx="2" fill="#ffffff"/><line x1="128" y1="94" x2="128" y2="88" stroke="#4a2545" stroke-width="1.5"/><ellipse class="flame" cx="128" cy="80" rx="5" ry="9" fill="#ffd166"/><ellipse class="flame" cx="128" cy="82" rx="2.4" ry="5" fill="#fff"/><rect x="113" y="60" width="30" height="72" fill="transparent"/></g>
+          <g class="candle" data-x="160"><rect x="156" y="94" width="8" height="36" rx="2" fill="#d96bff"/><line x1="160" y1="94" x2="160" y2="88" stroke="#4a2545" stroke-width="1.5"/><ellipse class="flame" cx="160" cy="80" rx="5" ry="9" fill="#ffd166"/><ellipse class="flame" cx="160" cy="82" rx="2.4" ry="5" fill="#fff"/><rect x="145" y="60" width="30" height="72" fill="transparent"/></g>
+          <g class="candle" data-x="192"><rect x="188" y="94" width="8" height="36" rx="2" fill="#ffd166"/><line x1="192" y1="94" x2="192" y2="88" stroke="#4a2545" stroke-width="1.5"/><ellipse class="flame" cx="192" cy="80" rx="5" ry="9" fill="#ffd166"/><ellipse class="flame" cx="192" cy="82" rx="2.4" ry="5" fill="#fff"/><rect x="177" y="60" width="30" height="72" fill="transparent"/></g>
+          <g class="candle" data-x="225"><rect x="221" y="94" width="8" height="36" rx="2" fill="#7dd3fc"/><line x1="225" y1="94" x2="225" y2="88" stroke="#4a2545" stroke-width="1.5"/><ellipse class="flame" cx="225" cy="80" rx="5" ry="9" fill="#ffd166"/><ellipse class="flame" cx="225" cy="82" rx="2.4" ry="5" fill="#fff"/><rect x="210" y="60" width="30" height="72" fill="transparent"/></g>
+        </g>
+
+        <path id="hintLine" d="M160 60 L160 266" stroke="#fff" stroke-width="3" stroke-dasharray="6 8" stroke-linecap="round" fill="none"/>
+        <polyline id="trail" points="" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <g id="smokeLayer"></g>
+      </svg>
+      <div class="knife" id="knife">🔪</div>
+    </div>
+    <div class="row" id="cBtns"></div>
+  </div>
+            </section>
 <!-- 3. MESSAGE (first page after reveal) -->
 <section id="p1" class="screen">
   <div class="inner">
@@ -458,7 +546,7 @@
         num.className = "count-num"; num.textContent = "🎂"; num.style.fontSize = "clamp(6rem, 28vw, 10rem)";
         msg.textContent = "Happy Birthday!";
         celebrate();
-        setTimeout(() => { show("p1"); celebrate(); }, 1500);
+        setTimeout(() => { show("cake"); startCake(); }, 1800);
         return;
       }
       num.className = "count-num"; void num.offsetWidth;
@@ -469,7 +557,148 @@
     }
     step();
   }
+  /* ========== Cake: blow the candles, then slice ========== */
+  const cakeSvg = $("#cakeSvg"), cakeWrap = $("#cakeWrap"), knife = $("#knife");
+  const cTitle = $("#cTitle"), cSub = $("#cSub"), cBtns = $("#cBtns");
+  const candles = Array.from(document.querySelectorAll(".candle"));
+  const uWhole = $("#uWhole"), uL = $("#uL"), uS = $("#uS"), uR = $("#uR");
+  const clL = document.querySelector("#cL rect"), clS = document.querySelector("#cS rect"), clR = document.querySelector("#cR rect");
+  const face = $("#face"), trail = $("#trail"), hintLine = $("#hintLine"), smokeLayer = $("#smokeLayer");
+  const SLICE_W = 62, CUT_MIN = 62, CUT_MAX = 204;
+  let cakeState = "idle", stopMic = null, dragging = false, pts = [];
 
+  function setCakeText(title, sub) {
+    cTitle.textContent = title; cSub.textContent = sub;
+    cSub.classList.remove("fade-in"); void cSub.offsetWidth; cSub.classList.add("fade-in");
+  }
+
+  function startCake() {
+    cakeState = "blow"; dragging = false; pts = [];
+    cakeSvg.classList.remove("gone");
+    candles.forEach((c) => c.classList.remove("out"));
+    uWhole.style.display = ""; [uL, uS, uR].forEach((u) => { u.style.display = "none"; u.style.transform = ""; });
+    face.setAttribute("opacity", "0"); trail.setAttribute("points", ""); hintLine.classList.remove("show");
+    knife.style.display = "none"; smokeLayer.innerHTML = "";
+    setCakeText("Make a wish 🕯️", "Tap the candles to blow them out");
+    cBtns.innerHTML = '<button class="btn" id="blowBtn">Blow 💨</button><button class="btn ghost" id="micBtn">🎤 Use mic</button>';
+    $("#blowBtn").addEventListener("click", blowAll);
+    $("#micBtn").addEventListener("click", listenMic);
+  }
+
+  function puff(x) {
+    for (let i = 0; i < 3; i++) {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", x + rand(-3, 3)); c.setAttribute("cy", 78 - i * 4); c.setAttribute("r", 4 + i);
+      c.setAttribute("class", "smoke"); c.style.setProperty("--dx", rand(-14, 14) + "px");
+      c.style.animationDelay = i * 0.12 + "s";
+      smokeLayer.appendChild(c); setTimeout(() => c.remove(), 2200);
+    }
+  }
+  function extinguish(c) {
+    if (cakeState !== "blow" || c.classList.contains("out")) return;
+    c.classList.add("out"); puff(+c.dataset.x);
+    burst(innerWidth / 2, innerHeight * 0.4, 6, 4);
+    if (candles.every((k) => k.classList.contains("out"))) allOut();
+  }
+  candles.forEach((c) => c.addEventListener("click", () => extinguish(c)));
+  function blowAll() { candles.forEach((c, i) => setTimeout(() => extinguish(c), i * 150)); }
+
+  function listenMic() {
+    if (stopMic || cakeState !== "blow") return;
+    const btn = $("#micBtn"); const vol = audio.volume;
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: false } }).then((stream) => {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ac = new AC(), src = ac.createMediaStreamSource(stream), an = ac.createAnalyser();
+      an.fftSize = 1024; src.connect(an);
+      const buf = new Uint8Array(an.fftSize); let loud = 0, alive = true;
+      audio.volume = 0.1; btn.textContent = "🎤 Blow now…";
+      stopMic = () => { alive = false; stopMic = null; audio.volume = vol; stream.getTracks().forEach((t) => t.stop()); try { ac.close(); } catch (e) {} const b = $("#micBtn"); if (b) b.textContent = "🎤 Use mic"; };
+      (function loop() {
+        if (!alive) return;
+        an.getByteTimeDomainData(buf);
+        let s = 0; for (let i = 0; i < buf.length; i++) { const d = (buf[i] - 128) / 128; s += d * d; }
+        loud = Math.sqrt(s / buf.length) > 0.2 ? loud + 1 : Math.max(0, loud - 1);
+        if (loud > 8) { stopMic(); blowAll(); return; }
+        requestAnimationFrame(loop);
+      })();
+    }).catch(() => { btn.textContent = "Mic off, tap candles"; });
+  }
+
+  function allOut() {
+    if (stopMic) stopMic();
+    cakeState = "wait";
+    cBtns.innerHTML = "";
+    setTimeout(() => {
+      cakeSvg.classList.add("gone");
+      setCakeText("Now cut the cake 🔪", "Swipe down across the cake with your finger");
+      hintLine.classList.add("show");
+      cakeState = "cut";
+      setTimeout(() => {
+        if (cakeState === "cut") {
+          cBtns.innerHTML = '<button class="btn ghost fade-in" id="cutBtn">Cut it for me 🔪</button>';
+          $("#cutBtn").addEventListener("click", () => performCut(130));
+        }
+      }, 5000);
+    }, 900);
+  }
+
+  function toSvg(e) {
+    const p = cakeSvg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+    return p.matrixTransform(cakeSvg.getScreenCTM().inverse());
+  }
+  function moveKnife(e) {
+    const r = cakeWrap.getBoundingClientRect();
+    knife.style.left = e.clientX - r.left + "px"; knife.style.top = e.clientY - r.top + "px";
+  }
+  cakeWrap.addEventListener("pointerdown", (e) => {
+    if (cakeState !== "cut") return;
+    dragging = true; pts = [];
+    try { cakeWrap.setPointerCapture(e.pointerId); } catch (err) {}
+    knife.style.display = "block"; moveKnife(e);
+    const p = toSvg(e); pts.push(p); trail.setAttribute("points", p.x + "," + p.y);
+  });
+  cakeWrap.addEventListener("pointermove", (e) => {
+    if (!dragging || cakeState !== "cut") return;
+    moveKnife(e);
+    const p = toSvg(e); pts.push(p);
+    trail.setAttribute("points", pts.map((q) => q.x.toFixed(1) + "," + q.y.toFixed(1)).join(" "));
+    const inside = pts.filter((q) => q.x > 50 && q.x < 270);
+    if (inside.length > 3) {
+      const ys = inside.map((q) => q.y), travel = Math.max(...ys) - Math.min(...ys);
+      if (travel > 75) {
+        const recent = inside.slice(-8), mx = recent.reduce((a, q) => a + q.x, 0) / recent.length;
+        performCut(Math.max(CUT_MIN, Math.min(CUT_MAX, mx - SLICE_W / 2)));
+      }
+    }
+  });
+  function endDrag() { if (!dragging) return; dragging = false; if (cakeState === "cut") { trail.setAttribute("points", ""); knife.style.display = "none"; } }
+  cakeWrap.addEventListener("pointerup", endDrag);
+  cakeWrap.addEventListener("pointercancel", endDrag);
+
+  function performCut(x) {
+    if (cakeState !== "cut") return;
+    cakeState = "done"; dragging = false;
+    hintLine.classList.remove("show"); trail.setAttribute("points", ""); knife.style.display = "none";
+    clL.setAttribute("width", x);
+    clS.setAttribute("x", x);
+    clR.setAttribute("x", x + SLICE_W); clR.setAttribute("width", 320 - (x + SLICE_W));
+    face.setAttribute("x", x); face.setAttribute("opacity", "1");
+    uWhole.style.display = "none";
+    [uL, uS, uR].forEach((u) => { u.style.display = ""; u.style.transform = "none"; });
+    uS.style.transformOrigin = (x + SLICE_W / 2) + "px 190px";
+    void cakeSvg.getBoundingClientRect();
+    uL.style.transform = "translateX(-16px)";
+    uR.style.transform = "translateX(16px)";
+    uS.style.transform = "translate(2px, 36px) rotate(4deg) scale(1.1)";
+    celebrate();
+    setTimeout(() => burst(innerWidth / 2, innerHeight * 0.35, 80, 12), 400);
+    setCakeText("Make a wish… 🌠", "Happy Birthday, OFIJAN! Enjoy your slice 🍰💖");
+    cBtns.innerHTML = "";
+    setTimeout(() => {
+      cBtns.innerHTML = '<button class="btn fade-in" id="openBtn">Open your gift 💌</button>';
+      $("#openBtn").addEventListener("click", () => { show("p1"); celebrate(); });
+    }, 1800);
+      }
   /* ========== Gallery ========== */
   const fr = $("#frame"), thumbs = $("#thumbs"), counter = $("#counter");
   const imgs = [], tmbs = [];
