@@ -204,6 +204,15 @@
   #trail { filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #ff4fa3); }
   .knife { position: absolute; left: 0; top: 0; font-size: 44px; line-height: 1; pointer-events: none; display: none; transform: translate(-50%, -85%) rotate(-30deg); filter: drop-shadow(0 0 8px rgba(255, 255, 255, .7)); z-index: 3; }
   .fade-in { animation: rise .7s ease both; }
+    /* ---------- waiting screen (locked until her birthday) ---------- */
+  #wait { z-index: 6; }
+  .wait-title { font-size: clamp(2.2rem, 9vw, 3rem); line-height: 1.1; }
+  .wait-sub { font-weight: 300; opacity: .85; font-size: 1rem; }
+  .cd { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .cd-item { min-width: 74px; padding: 14px 8px 12px; border-radius: 18px; background: var(--glass); border: 1px solid var(--glass-line); box-shadow: 0 0 22px rgba(255, 79, 163, .2), inset 0 0 18px rgba(255, 79, 163, .06); }
+  .cd-num { font-family: "Dancing Script", "Brush Script MT", cursive; font-weight: 700; font-size: 2.5rem; line-height: 1; color: #fff; text-shadow: 0 0 10px var(--pink), 0 0 26px var(--pink-deep); }
+  .cd-lab { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; opacity: .75; margin-top: 8px; }
+  .wait-foot { font-size: .85rem; font-weight: 300; opacity: .7; }
   /* ---------- misc ---------- */
   .dotsnav { display: flex; gap: 8px; margin-top: 4px; }
   .dotsnav span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 150, 205, .3); }
@@ -226,7 +235,21 @@
 <body>
 <canvas id="bg"></canvas>
 <button id="mute" aria-label="Toggle music">🔊</button>
-
+<!-- 0. WAITING (locked until her birthday) -->
+<section id="wait" class="screen active">
+  <div class="inner">
+    <div class="lock-icon">🎁</div>
+    <h1 class="script wait-title glow">Something special is coming…</h1>
+    <p class="wait-sub">Your gift opens on December 18</p>
+    <div class="cd">
+      <div class="cd-item"><div class="cd-num" id="cdD">0</div><div class="cd-lab">Days</div></div>
+      <div class="cd-item"><div class="cd-num" id="cdH">00</div><div class="cd-lab">Hours</div></div>
+      <div class="cd-item"><div class="cd-num" id="cdM">00</div><div class="cd-lab">Min</div></div>
+      <div class="cd-item"><div class="cd-num" id="cdS">00</div><div class="cd-lab">Sec</div></div>
+    </div>
+    <p class="wait-foot">Made with love 💖</p>
+  </div>
+</section>
 <!-- 1. PASSCODE -->
 <section id="lock" class="screen active">
   <div class="inner">
@@ -733,5 +756,44 @@
   go(0);
 })();
 </script>
+  <script>
+(function () {
+  // Gift opens at midnight (Addis Ababa time) on December 18, 2026
+  var TARGET = new Date("2026-12-18T00:00:00+03:00").getTime();
+  var preview = /[?&]preview\b/.test(location.search);
+  var wait = document.getElementById("wait");
+  var lock = document.getElementById("lock");
+  if (!wait) return;
+  var waiting = !preview && Date.now() < TARGET;
+  if (!waiting) { wait.classList.remove("active"); wait.style.display = "none"; return; }
+
+  // Hide the passcode screen and block its keyboard while waiting
+  lock.style.visibility = "hidden";
+  window.addEventListener("keydown", function (e) {
+    if (waiting) { e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
+
+  var dEl = document.getElementById("cdD"), hEl = document.getElementById("cdH"),
+      mEl = document.getElementById("cdM"), sEl = document.getElementById("cdS");
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  var timer;
+  function tick() {
+    var diff = TARGET - Date.now();
+    if (diff <= 0) {
+      waiting = false; clearInterval(timer);
+      lock.style.visibility = "";
+      wait.classList.remove("active");
+      setTimeout(function () { wait.style.display = "none"; }, 900);
+      return;
+    }
+    var s = Math.floor(diff / 1000);
+    dEl.textContent = Math.floor(s / 86400);
+    hEl.textContent = pad(Math.floor(s % 86400 / 3600));
+    mEl.textContent = pad(Math.floor(s % 3600 / 60));
+    sEl.textContent = pad(s % 60);
+  }
+  tick(); timer = setInterval(tick, 1000);
+})();
+  </script>
 </body>
   </html>
