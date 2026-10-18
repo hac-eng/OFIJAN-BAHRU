@@ -883,11 +883,14 @@
   vBtn.textContent = "🎙️ A voice note from me";
   $("#p3 .wish-card").after(vBtn);
   voice.addEventListener("canplay", () => { vBtn.style.display = ""; });
-  vBtn.addEventListener("click", () => { if (voice.paused) { audio.volume = .15; voice.play(); } else voice.pause(); });
+   let musicWas = false;
+  vBtn.addEventListener("click", () => {
+    if (voice.paused) { musicWas = !audio.paused; audio.pause(); voice.play(); } else voice.pause();
+  });
   voice.addEventListener("play", () => { vBtn.classList.add("playing"); vBtn.textContent = "⏸ Playing… 💖"; });
   const voiceStop = () => {
-    vBtn.classList.remove("playing"); audio.volume = .85;
-    vBtn.textContent = voice.ended ? "🎙️ Play again" : voice.currentTime > 0 ? "▶ Continue voice note" : "🎙️ A voice note from me";
+  vBtn.classList.remove("playing"); if (musicWas) { musicWas = false; audio.play(); }
+  vBtn.textContent = voice.ended ? "🎙️ Play again" : voice.currentTime > 0 ? "▶ Continue voice note" : "🎙️ A voice note from me";
   };
   voice.addEventListener("pause", voiceStop); voice.addEventListener("ended", voiceStop);
   new MutationObserver(() => { if (!$("#p3").classList.contains("active")) voice.pause(); })
