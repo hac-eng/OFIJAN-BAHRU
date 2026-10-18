@@ -213,6 +213,48 @@
   .cd-num { font-family: "Dancing Script", "Brush Script MT", cursive; font-weight: 700; font-size: 2.5rem; line-height: 1; color: #fff; text-shadow: 0 0 10px var(--pink), 0 0 26px var(--pink-deep); }
   .cd-lab { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; opacity: .75; margin-top: 8px; }
   .wait-foot { font-size: .85rem; font-weight: 300; opacity: .7; }
+    /* ---------- photo animations, typewriter, captions, voice note ---------- */
+  .frame img.show { z-index: 1; }
+  /* photo entrance animations (a different one is picked each time) */
+  .frame img.show[data-a="0"] { animation: inZoom .9s cubic-bezier(.2, 1.3, .4, 1) both; }
+  .frame img.show[data-a="1"] { animation: inLeft .8s cubic-bezier(.2, .9, .3, 1.15) both; }
+  .frame img.show[data-a="2"] { animation: inRight .8s cubic-bezier(.2, .9, .3, 1.15) both; }
+  .frame img.show[data-a="3"] { animation: inFlip .9s ease-out both; }
+  .frame img.show[data-a="4"] { animation: inDrop 1s ease-in both; }
+  .frame img.show[data-a="5"] { animation: inBlur .9s ease-out both; }
+  .frame img.show[data-a="6"] { animation: inHeart 1s ease-in-out both; }
+  .frame img.show[data-a="7"] { animation: inSwing .9s cubic-bezier(.2, 1, .3, 1) both; }
+  @keyframes inZoom { from { opacity: 0; transform: scale(.3) rotate(-14deg); } 60% { opacity: 1; transform: scale(1.08) rotate(3deg); } to { opacity: 1; transform: none; } }
+  @keyframes inLeft { from { opacity: 0; transform: translateX(-110%) rotate(-10deg); } to { opacity: 1; transform: none; } }
+  @keyframes inRight { from { opacity: 0; transform: translateX(110%) rotate(10deg); } to { opacity: 1; transform: none; } }
+  @keyframes inFlip { from { opacity: 0; transform: perspective(700px) rotateY(-90deg) scale(.8); } to { opacity: 1; transform: perspective(700px) rotateY(0) scale(1); } }
+  @keyframes inDrop {
+    0% { opacity: 1; transform: translateY(-110%); }
+    55% { transform: translateY(0); }
+    70% { transform: translateY(-9%); }
+    85% { transform: translateY(0); }
+    93% { transform: translateY(-3%); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes inBlur { from { opacity: 0; filter: blur(20px) saturate(2); transform: scale(1.5); } to { opacity: 1; filter: none; transform: none; } }
+  @keyframes inHeart { from { opacity: 1; clip-path: circle(0% at 50% 50%); } to { opacity: 1; clip-path: circle(80% at 50% 50%); } }
+  @keyframes inSwing { from { opacity: 0; transform: translateY(70%) rotate(24deg) scale(.6); } to { opacity: 1; transform: none; } }
+  .frame { max-height: 54vh; }
+  .tw { opacity: 0; transition: opacity .3s ease; }
+  .tw.on { opacity: 1; }
+  .skip-hint { position: fixed; left: 0; right: 0; bottom: 14px; text-align: center; pointer-events: none; z-index: 7; font-size: .78rem; letter-spacing: .12em; opacity: .6; text-shadow: 0 0 10px #000; }
+  #p1 .btn.hold { visibility: hidden; }
+  #p1 .btn.pop { animation: btnPop .6s ease both; }
+  @keyframes btnPop { from { opacity: 0; transform: translateY(10px) scale(.9); } to { opacity: 1; transform: none; } }
+  .cap {
+    min-height: 2.4em; max-width: 330px; font-size: 1.02rem; line-height: 1.35; text-align: center;
+    text-shadow: 0 0 14px rgba(255, 79, 163, .55);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cap.in { animation: capIn .7s ease both; }
+  @keyframes capIn { from { opacity: 0; transform: translateY(8px) scale(.96); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+  .voice-btn.playing { animation: voicePulse 1.4s ease-in-out infinite; }
+  @keyframes voicePulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 79, 163, .55); } 50% { box-shadow: 0 0 0 14px rgba(255, 79, 163, 0); } }
   /* ---------- misc ---------- */
   .dotsnav { display: flex; gap: 8px; margin-top: 4px; }
   .dotsnav span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 150, 205, .3); }
@@ -754,6 +796,103 @@
     if (Math.abs(dx) > 40) { go(cur + (dx < 0 ? 1 : -1)); restart(); }
     sx = null;
   });
+   /* ========== Extras: photo animations, captions, typewriter message, voice note ========== */
+  {
+  // Photo captions: line 1 goes with photo 1, line 2 with photo 2, and so on.
+  // Edit any line you like. If you have more photos than lines, they repeat.
+  const CAPTIONS = [
+    "Peace, love and good vibes ✌🏻💖",
+    "Casual pose, zero effort, full queen 👑",
+    "Soft smile, big heart 🥹",
+    "That little pink flower though 🌸",
+    "Smile so big the lights got jealous ✨",
+    "Golden hour called, it wants its glow back 🌅",
+    "That \"yes, I know I look good\" smile 😌",
+    "Looking into the distance like a movie scene 🎬",
+    "Mid side-eye and still gorgeous 😭",
+    "Plot twist: she's the main character, everyone else is background 🎬",
+    "Pure sweetness, straight from the camera 🍭",
+    "Even in pixels she's cute. Loading HD version… 😂",
+    "Her leg tried to steal the spotlight. It failed 😂🦵",
+    "Posing like it's a magazine cover 📸💅",
+    "Selfie game strong, arm length stronger 🤳😂",
+    "Even her silhouette looks like a movie poster 🌅"
+  ];
+  const cap = document.createElement("div");
+  cap.className = "cap"; fr.after(cap);
+  let lastA = -1;
+  function setCaption() {
+    let a; do { a = Math.floor(Math.random() * 8); } while (a === lastA);
+    lastA = a; imgs[cur].dataset.a = a; // random entrance animation for this photo
+    cap.textContent = CAPTIONS[cur % CAPTIONS.length] || "";
+    cap.classList.remove("in"); void cap.offsetWidth; cap.classList.add("in");
+  }
+  new MutationObserver(setCaption).observe(counter, { childList: true, characterData: true, subtree: true });
+
+  // Typewriter: your message types itself out (tap the message to show it all at once)
+  const card = $("#msgcard"), p1 = $("#p1"), toPhotos = $("#p1 .btn");
+  const seg = (s) => (window.Intl && Intl.Segmenter)
+    ? Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(s), (x) => x.segment)
+    : Array.from(s);
+  const letters = [];
+  card.querySelectorAll("p").forEach((p) => {
+    const text = p.textContent;
+    p.setAttribute("aria-label", text); p.textContent = "";
+    seg(text).forEach((ch) => {
+      const sp = document.createElement("span");
+      sp.className = "tw"; sp.setAttribute("aria-hidden", "true"); sp.textContent = ch;
+      p.appendChild(sp); letters.push(sp);
+    });
+  });
+  const typeHint = document.createElement("div");
+  typeHint.className = "skip-hint"; typeHint.textContent = "tap the message to show it all";
+  let typed = false, typing = false, typeI = 0, typeT = null;
+  function finishType() {
+    clearTimeout(typeT); typing = false; typed = true;
+    letters.forEach((l) => l.classList.add("on"));
+    typeHint.remove();
+    toPhotos.classList.remove("hold"); toPhotos.classList.add("pop");
+  }
+  function typeNext() {
+    if (typeI >= letters.length) return finishType();
+    const l = letters[typeI++]; l.classList.add("on");
+    const ch = l.textContent;
+    if (typeI % 6 === 0 && l.getBoundingClientRect().bottom > innerHeight * .78) p1.scrollBy({ top: 70, behavior: "smooth" });
+    typeT = setTimeout(typeNext, /[.!?]/.test(ch) ? 220 : ch === "," ? 110 : 16);
+  }
+  function startType() {
+    if (typed || typing) return;
+    if (reduce) return finishType();
+    typing = true; typeI = 0;
+    $("#p1 .dotsnav").before(typeHint);
+    typeT = setTimeout(typeNext, 1500);
+  }
+  toPhotos.classList.add("hold");
+  card.addEventListener("click", () => { if (typing) finishType(); });
+  new MutationObserver(() => { if (p1.classList.contains("active")) startType(); })
+    .observe(p1, { attributes: true, attributeFilter: ["class"] });
+
+  // Voice note: put voice.mp3 (or voice.m4a) next to hbd.html. No file = no button.
+  const voice = document.createElement("audio");
+  voice.preload = "auto";
+  ["voice.mp3", "voice.m4a"].forEach((src) => {
+    const s = document.createElement("source"); s.src = src; voice.appendChild(s);
+  });
+  const vBtn = document.createElement("button");
+  vBtn.className = "btn voice-btn"; vBtn.style.display = "none";
+  vBtn.textContent = "🎙️ A voice note from me";
+  $("#p3 .wish-card").after(vBtn);
+  voice.addEventListener("canplay", () => { vBtn.style.display = ""; });
+  vBtn.addEventListener("click", () => { if (voice.paused) { audio.volume = .15; voice.play(); } else voice.pause(); });
+  voice.addEventListener("play", () => { vBtn.classList.add("playing"); vBtn.textContent = "⏸ Playing… 💖"; });
+  const voiceStop = () => {
+    vBtn.classList.remove("playing"); audio.volume = .85;
+    vBtn.textContent = voice.ended ? "🎙️ Play again" : voice.currentTime > 0 ? "▶ Continue voice note" : "🎙️ A voice note from me";
+  };
+  voice.addEventListener("pause", voiceStop); voice.addEventListener("ended", voiceStop);
+  new MutationObserver(() => { if (!$("#p3").classList.contains("active")) voice.pause(); })
+    .observe($("#p3"), { attributes: true, attributeFilter: ["class"] });
+  } 
   go(0);
 })();
 </script>
